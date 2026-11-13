@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CustomerPulse | Customer Churn Prediction & Retention Analytics</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-layout">
+    <header class="navbar">
+      <div class="nav-brand">
+        <div class="brand-pulse">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+          </svg>
+        </div>
+        <div>
+          <h2>CustomerPulse</h2>
+          <span class="tagline">CHURN PREDICTION & RETENTION INTELLIGENCE</span>
+        </div>
+      </div>
+
+      <div class="nav-metrics">
+        <div class="metric-chip">
+          <span class="label">ACCOUNTS</span>
+          <span class="value" id="statCustomers">0</span>
+        </div>
+        <div class="metric-chip">
+          <span class="label">AT-RISK ACCOUNTS</span>
+          <span class="value text-red" id="statAtRisk">0</span>
+        </div>
+        <div class="metric-chip">
+          <span class="label">AVG CHURN RISK</span>
+          <span class="value" id="statAvgRisk">0.0%</span>
+        </div>
+        <div class="metric-chip">
+          <span class="label">MRR AT RISK</span>
+          <span class="value text-amber" id="statMrrRisk">$0.00</span>
+        </div>
+        <button class="btn btn-primary" id="openCustModal">+ Register Account</button>
+      </div>
+    </header>
+
+    <main class="main-container">
+      <div class="hero-section">
+        <div>
+          <h1>Autonomous Customer Churn Prediction & Explainability</h1>
+          <p class="subtitle">Logistic classification modeling tenure decay, support ticket frequency, product engagement depth, and automated customer success intervention triggers.</p>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="nav-tabs">
+        <button class="tab-btn active" data-tab="accounts">Monitored Account Portfolio</button>
+        <button class="tab-btn" data-tab="simulator">What-If Churn Simulator</button>
+      </div>
+
+      <!-- TAB 1: Accounts -->
+      <section class="tab-pane active" id="paneAccounts">
+        <div class="card">
+          <div class="card-header">
+            <h3>Customer Churn Risk Roster</h3>
+            <span class="badge badge-info">Real-Time Risk Scoring</span>
+          </div>
+          <div class="card-body">
+            <div class="table-container">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Risk Tier</th>
+                    <th>Customer Name</th>
+                    <th>Company</th>
+                    <th>Plan Tier</th>
+                    <th>Tenure</th>
+                    <th>MRR</th>
+                    <th>Inactivity</th>
+                    <th>Tickets</th>
+                    <th>Usage Score</th>
+                    <th>Churn Probability</th>
+                  </tr>
+                </thead>
+                <tbody id="customersTableBody">
+                  <tr><td colspan="10" class="text-center text-muted">Loading account telemetry...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: Simulator -->
+      <section class="tab-pane" id="paneSimulator">
+        <div class="simulator-grid">
+          <div class="card">
+            <div class="card-header">
+              <h3>Account Parameters Simulator</h3>
+              <span class="badge badge-info">Interactive Feature Weights</span>
+            </div>
+            <div class="card-body">
+              <div class="sim-fields">
+                <div class="field">
+                  <label>Contract Type</label>
+                  <select id="simContract">
+                    <option value="Month-to-Month">Month-to-Month (Higher Volatility)</option>
+                    <option value="Annual">Annual Commitment (Lower Volatility)</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label>Tenure: <span id="tenureVal">12 Months</span></label>
+                  <input type="range" id="simTenure" min="1" max="60" value="12">
+                </div>
+
+                <div class="field">
+                  <label>Days Inactive: <span id="inactivityVal">5 Days</span></label>
+                  <input type="range" id="simInactivity" min="0" max="45" value="5">
+                </div>
+
+                <div class="field">
+                  <label>Support Tickets: <span id="ticketsVal">1 Ticket</span></label>
+                  <input type="range" id="simTickets" min="0" max="8" value="1">
+                </div>
+
+                <div class="field">
+                  <label>Feature Usage Depth: <span id="usageVal">70 / 100</span></label>
+                  <input type="range" id="simUsage" min="0" max="100" value="70">
+                </div>
+
+                <button class="btn btn-primary btn-block" id="runSimBtn">Evaluate Risk Probability</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3>Model Prediction & Impact Attribution</h3>
+              <span class="badge" id="simRiskBadge">RISK: LOW</span>
+            </div>
+            <div class="card-body">
+              <div class="sim-kpi-block">
+                <div class="sim-probability" id="simProbability">15.2%</div>
+                <div class="sim-caption">Estimated Churn Probability</div>
+              </div>
+
+              <div class="recommendation-box" id="simRecommendation">
+                <strong>Recommended Playbook:</strong> Send proactive workflow tips & recommend integrations.
+              </div>
+
+              <h4 class="section-title" style="margin-top: 1.5rem;">Feature Impact Attribution (Log-Odds)</h4>
+              <div class="impact-list" id="simImpactList">
+                <div class="impact-item empty">Simulate an account profile to view feature weights.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal: Add Customer -->
+  <div class="modal-overlay" id="custModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Register Monitored Account</h3>
+        <button class="btn-close" id="closeCustBtn">&times;</button>
+      </div>
+      <form id="createCustForm">
+        <div class="field">
+          <label>Contact Name *</label>
+          <input type="text" id="custName" required placeholder="e.g. John Miller" value="John Miller">
+        </div>
+        <div class="field">
+          <label>Email Address *</label>
+          <input type="email" id="custEmail" required placeholder="e.g. jmiller@apextech.com" value="jmiller@apextech.com">
+        </div>
+        <div class="field">
+          <label>Company / Organization *</label>
+          <input type="text" id="custCompany" required placeholder="e.g. Apex Technologies" value="Apex Technologies">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="cancelCustBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary">Score & Save Account</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
